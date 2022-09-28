@@ -17,7 +17,7 @@
     KivyMd interface consists of three files: kivymd_main.py, kivymd_table.py and
     kivymd_register.py. In order to run the interface only kivymd_main.py should be run.
     The other files may not run correctly or at all as standalone files.
-    The required libraries to run this project are KivyMD 1.1.0 which is based on Kivy 2.0.0+
+    The required libraries to run this project is KivyMD 1.1.0 which is based on Kivy 2.0.0+
     
 
 
