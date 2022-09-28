@@ -184,7 +184,7 @@ class ParkingRegister(MDApp):
         "register title": "Регистрирай",
         "show registered title": "Покажи регистрираните",
         "about the app title": "За приложението",
-        "about the app": f"Паркинг регистратор\n Конзолно приложение плюс графичен интерфейс \n с помощта на KivyMd \n Борислав Ангелов 2022 © \n Версия: {APP_VERSION}",
+        "about the app": f"Паркинг регистратор\n Конзолно приложение плюс графичен интерфейс \n с помощта на KivyMD 1.0.0 \n Борислав Ангелов 2022 © \n Версия: {APP_VERSION}",
         "sort by": "Сортиране по",
         "today": "Днешна дата",
         "now": "Час",
