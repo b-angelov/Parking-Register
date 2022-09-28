@@ -201,6 +201,7 @@ class ParkingRegister(MDApp):
 
     def build(self, sorted_by: tuple = ("day","present")):
         # this will load kv lang
+        self.icon = "my_ico.png"
         self.registry_class.messages = self.messages
         self.sorted_by = list(sorted_by)
         screen = Builder.load_string(KV)
