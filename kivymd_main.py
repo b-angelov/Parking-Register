@@ -184,7 +184,7 @@ class ParkingRegister(MDApp):
         "register title": "Регистрирай",
         "show registered title": "Покажи регистрираните",
         "about the app title": "За приложението",
-        "about the app": f"Паркинг регистратор\n Конзолно приложение плюс графичен интерфейс \n с помощта на KivyMD 1.0.0 \n Борислав Ангелов 2022 © \n Версия: {APP_VERSION} \n https://github.com/b-angelov/Parking-Register",
+        "about the app": f"Паркинг регистратор\n Конзолно приложение плюс графичен интерфейс \n с помощта на KivyMD 1.1.0 \n Борислав Ангелов 2022 © \n Версия: {APP_VERSION} \n https://github.com/b-angelov/Parking-Register",
         "sort by": "Сортиране по",
         "today": "Днешна дата",
         "now": "Час",
@@ -324,7 +324,7 @@ class ParkingRegister(MDApp):
 
     def on_time_save(self, instance, value):
         add = 0
-        if self.time_dialog._am_pm_selector.selected == "pm":
+        if self.time_dialog._am_pm_selector.selected == "pm" and os.name == "nt":
             add = 12
         value = str(value).split(":")
         value[0] = str(add + int(value[0]))
@@ -348,7 +348,7 @@ class ParkingRegister(MDApp):
         # widget_id.remove_widget(self.root.ids.registry_app)
         widget_id.add_widget(new_widget)
 
-    def count_menu(self):
+    def count_menu(self, max_fields=10):
         # print(self.registry_class.layout.ids)
         menu_items = [
             {
@@ -357,7 +357,7 @@ class ParkingRegister(MDApp):
                 "text": f"{i + 1}",
                 "viewclass": "OneLineListItem",
                 "on_press": lambda x=i: self.replace_widget(self.root.ids.first, self.registry_class._load_view(x + 1)),
-            } for i in range(8)
+            } for i in range(10)
         ]
 
         count_menu_list = MDDropdownMenu(

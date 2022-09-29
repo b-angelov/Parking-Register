@@ -10,6 +10,7 @@ KV = """
         
         BaseListItem:
             ripple_scale: 0.07
+            height:100
             
         # MDScreen:
         #             
@@ -61,6 +62,12 @@ KV =\
             
 """ + KV
 
+KVE = "".join(["""
+        BaseListItem:
+            height: 100
+            ripple_scale: 0.07
+""" for _ in range(5)])
+
 
 
 class RegisterTable(MDApp):
@@ -83,12 +90,12 @@ class RegisterTable(MDApp):
         for st in range(count):
             kv += KV.replace("%d", str(st))
             kv = kv.replace("%p", str(pos))
-            pos -= 10
+            # pos -= 10
         return kv
 
     def _load_kv(self, kv: str):
         # kv = "\nScrollView:\n\tMDList:\n" + kv
-        kv = "\nScrollView:\n\tpos_hint: {\"center_x\": .5, \"center_y\": .1}\n\tMDList:\n\t" + kv
+        kv = "\nScrollView:\n\tpos_hint: {\"center_x\": .5, \"center_y\": .1}\n\tMDList:\n\t" + kv + KVE
         self.layout = Builder.load_string(kv)
         return self.layout
 
