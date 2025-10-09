@@ -33,6 +33,13 @@ jobs:
         env:
           USER: root
           PIP_BREAK_SYSTEM_PACKAGES: '1'  # This is needed for Ubuntu 24.04 and later to allow pip to upgrade packages
+
+      - name: Fix file permissions
+        run: |  
+          sudo chown -R $USER:$USER bin/
+          sudo chown -R $USER:$USER .buildozer/
+          # If you also want to cache .buildozer directory
+          sudo chown -R $USER:$USER ~/.buildozer/ || true 
       
       - name: Save Cache
         if: always()
@@ -50,8 +57,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          tag_name: ${{ github.ref || 'not-tagged' }}
+          release_name: Release ${{ github.ref || 'not-tagged' }}
           body_path: ./release_notes/${{ github.event.release.tag_name || 'default' }}.md
           draft: false
           prerelease: false
