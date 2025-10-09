@@ -13,22 +13,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Create workdir
-        run: mkdir -p ~/hostcwd
-        env:
-          USER: root
-
       - name: Load Cache
         uses: actions/cache/restore@v3
         with:
-          path: ~/hostcwd/.buildozer
+          path: ./.buildozer
           key: ${{ runner.os }}-buildozer-${{ hashFiles('**/requirements.txt') }}
 
       - name: Build with Buildozer
         uses: ArtemSBulgakov/buildozer-action@v1
         with:
           repository-root: main
-          workdir: ~/hostcwd
+          workdir: .
           buildozer-version: stable
           command: 'buildozer android release'
         env:
@@ -38,7 +33,7 @@ jobs:
       - name: Save Cache
         uses: actions/cache/save@v3
         with:
-          path: ~/hostcwd/.buildozer
+          path: ./.buildozer
           key: ${{ runner.os }}-buildozer-${{ hashFiles('**/requirements.txt') }}
 
 
