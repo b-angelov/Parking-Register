@@ -50,7 +50,7 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
-          body_path: /release_notes/${{ github.event.release.tag_name }}.md
+          body_path: /release_notes/${{ github.event.release.tag_name || 'default' }}.md
           draft: false
           prerelease: false
 
