@@ -26,6 +26,7 @@ jobs:
           workdir: ~/hostcwd
           buildozer-version: stable
           command: 'buildozer android release'
+          skip_chown: true
       
       - name: Save Cache
         uses: actions/cache/save@v3
