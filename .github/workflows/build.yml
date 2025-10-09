@@ -1,0 +1,58 @@
+name: Build
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+
+jobs:
+  build-buildozer:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Load Cache
+        uses: action/cache/restore@v3
+        with:
+          path: ~/hostcwd/.buildozer
+          key: ${{ runner.os }}-buildozer-${{ hashFiles('**/requirements.txt') }}
+
+      - name: Build with Buildozer
+        uses: ArtemSBulgakov/buildozer-action@v1
+        with:
+          repository-root: main
+          workdir: ~/hostcwd
+          buildozer-version: stable
+          command: 'buildozer android release'
+      
+      - name: Save Cache
+        uses: action/cache/save@v3
+        with:
+          path: ~/hostcwd/.buildozer
+          key: ${{ runner.os }}-buildozer-${{ hashFiles('**/requirements.txt') }}
+
+
+      - name: Release Branch
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body-path: /release_notes/${{ github.event.release.tag_name }}.md
+          draft: false
+          prerelease: false
+
+      - name: Upload Release APK
+        id: upload-release-apk
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: ./bin/*.apk
+          asset_name: parking-register.apk
+          asset_content_type: application/vnd.android.package-archive
