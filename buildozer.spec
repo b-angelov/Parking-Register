@@ -13,25 +13,23 @@ fullscreen = 0
 android.archs = arm64-v8a, armeabi-v7a
 android.allow_backup = True
 
+p4a.source_dir = 
+p4a.local_recipes = 
+p4a.branch = develop
+
 # Android API levels
 android.api = 35
 android.minapi = 21
 android.ndk_api = 21
 
 # Skip these for now
-# android.gradle_dependencies =
+android.gradle_dependencies =
 
 # Force Gradle versions
 android.gradle_version = 8.7
-android.gradle_plugin_version = 8.5.2
 android.gradle_distribution_url = https://services.gradle.org/distributions/gradle-8.7-bin.zip
 
 [buildozer]
-
-# Force Gradle versions
-android.gradle_version = 8.7
-android.gradle_plugin_version = 8.5.2
-android.gradle_distribution_url = https://services.gradle.org/distributions/gradle-8.7-bin.zip
 
 log_level = 2
 warn_on_root = 1
