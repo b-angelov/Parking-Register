@@ -17,7 +17,7 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: ./.buildozer
-          key: ${{ runner.os }}-buildozer-${{ hashFiles('**/requirements.txt') }}
+          key: ${{ runner.os }}-buildozer-${{ hashFiles('./buildozer.spec') }}
 
 
       - name: Build with Buildozer
@@ -46,7 +46,7 @@ jobs:
         uses: actions/cache/save@v3
         with:
           path: ./.buildozer
-          key: ${{ runner.os }}-buildozer-${{ hashFiles('**/requirements.txt') }}
+          key: ${{ runner.os }}-buildozer-${{ hashFiles('./buildozer.spec') }}
         env:
           USER: root
 
