@@ -18,7 +18,7 @@ p4a.local_recipes =
 p4a.branch = develop
 
 # Android API levels
-android.api = 35
+android.api = 34
 android.minapi = 21
 android.ndk_api = 21
 

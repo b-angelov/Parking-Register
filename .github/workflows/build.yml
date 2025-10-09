@@ -18,11 +18,6 @@ jobs:
         with:
           path: ./.buildozer
           key: ${{ runner.os }}-buildozer-${{ hashFiles('./buildozer.spec') }}
-      
-      - name: Install Android SDK API 35
-        run: |
-          yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --licenses
-          yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager "platforms;android-35" "platform-tools"
 
 
 
