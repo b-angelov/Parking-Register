@@ -28,8 +28,8 @@ jobs:
           buildozer-version: stable
           command: |
             buildozer android update || true
-            find ~/.buildozer -name "gradle-wrapper.properties" -exec sed -i 's|gradle-[0-9.]*-bin.zip|gradle-8.7-bin.zip|g' {} \;
-            find ~/.buildozer -name "build.gradle" -exec sed -i "s/com.android.tools.build:gradle:[0-9.]*/com.android.tools.build:gradle:8.2.0/g" {} \;
+            echo "I AM HERE NOW **********************************************************************************************!!";
+            find ./.buildozer -name "gradle-wrapper.properties" -exec sed -i 's|gradle-[0-9.]*-all.zip|gradle-8.7-bin.zip|g' {} \;
             buildozer android release
         env:
           USER: root
