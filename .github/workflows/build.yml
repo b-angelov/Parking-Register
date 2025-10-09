@@ -31,6 +31,7 @@ jobs:
           PIP_BREAK_SYSTEM_PACKAGES: '1'  # This is needed for Ubuntu 24.04 and later to allow pip to upgrade packages
       
       - name: Save Cache
+        if: always()
         uses: actions/cache/save@v3
         with:
           path: ./.buildozer

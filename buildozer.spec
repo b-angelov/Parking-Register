@@ -1,7 +1,7 @@
 [app]
 title = Parking Register
 package.name = parking_register
-package.domain = org.test
+package.domain = com.github.b-angelov.parking_register
 source.dir = .
 source.include_exts = py,png,jpg,kv,atlas
 icon.filename = %(source.dir)s/my_ico.png
