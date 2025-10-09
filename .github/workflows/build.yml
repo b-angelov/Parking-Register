@@ -19,17 +19,6 @@ jobs:
           path: ./.buildozer
           key: ${{ runner.os }}-buildozer-${{ hashFiles('**/requirements.txt') }}
 
-      - name: Force Gradle 8.7 and compatible AGP
-        run: |
-          # Wait for buildozer to create the gradle wrapper
-          buildozer android update || true
-          
-          # Update Gradle wrapper
-          find ~/.buildozer -name "gradle-wrapper.properties" -exec sed -i 's|gradle-[0-9.]*-bin.zip|gradle-8.7-bin.zip|g' {} \;
-          
-          # Update build.gradle for AGP version
-          find ~/.buildozer -name "build.gradle" -exec sed -i "s/com.android.tools.build:gradle:[0-9.]*/com.android.tools.build:gradle:8.2.0/g" {} \;
-
 
       - name: Build with Buildozer
         uses: ArtemSBulgakov/buildozer-action@v1
@@ -37,7 +26,11 @@ jobs:
           repository-root: main
           workdir: .
           buildozer-version: stable
-          command: 'buildozer android release'
+          command: |
+            buildozer android update || true
+            find ~/.buildozer -name "gradle-wrapper.properties" -exec sed -i 's|gradle-[0-9.]*-bin.zip|gradle-8.7-bin.zip|g' {} \;
+            find ~/.buildozer -name "build.gradle" -exec sed -i "s/com.android.tools.build:gradle:[0-9.]*/com.android.tools.build:gradle:8.2.0/g" {} \;
+            buildozer android release
         env:
           USER: root
           PIP_BREAK_SYSTEM_PACKAGES: '1'  # This is needed for Ubuntu 24.04 and later to allow pip to upgrade packages
