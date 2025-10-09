@@ -15,12 +15,12 @@ android.allow_backup = True
 
 p4a.source_dir = 
 p4a.local_recipes = 
-p4a.branch = stable
+# p4a.branch = stable
 
 # Android API levels
 android.api = 35
 android.minapi = 21
-android.ndk_api = 21
+# android.ndk_api = 21
 
 # Skip these for now
 android.gradle_dependencies =
