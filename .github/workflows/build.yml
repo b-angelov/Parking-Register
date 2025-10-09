@@ -28,7 +28,6 @@ jobs:
           buildozer-version: stable
           command: |
             buildozer android update || true
-            echo "I AM HERE NOW **********************************************************************************************!!";
             find ./.buildozer -name "gradle-wrapper.properties" -exec sed -i 's|gradle-[0-9.]*-all.zip|gradle-8.7-bin.zip|g' {} \;
             buildozer android release
         env:
@@ -51,7 +50,7 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
-          body-path: /release_notes/${{ github.event.release.tag_name }}.md
+          body_path: /release_notes/${{ github.event.release.tag_name }}.md
           draft: false
           prerelease: false
 
