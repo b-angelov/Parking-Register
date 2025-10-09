@@ -19,11 +19,6 @@ jobs:
           path: ~/hostcwd/.buildozer
           key: ${{ runner.os }}-buildozer-${{ hashFiles('**/requirements.txt') }}
 
-      - name: Patch Buildozer action for Ubuntu 24.04+
-        run: |
-          sed -i "s/pip install --user --upgrade/pip install --break-system-packages --upgrade/" /action/entrypoint.py
-        shell: bash
-
       - name: Build with Buildozer
         uses: ArtemSBulgakov/buildozer-action@v1
         with:
@@ -33,6 +28,7 @@ jobs:
           command: 'buildozer android release'
         env:
           USER: root
+          PIP_BREAK_SYSTEM_PACKAGES: '1'  # This is needed for Ubuntu 24.04 and later to allow pip to upgrade packages
       
       - name: Save Cache
         uses: actions/cache/save@v3
