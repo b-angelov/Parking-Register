@@ -26,6 +26,7 @@ android.ndk_api = 21
 android.gradle_dependencies =
 
 # Force Gradle versions
+android.gradle_plugin_version = 8.2.0
 android.gradle_version = 8.7
 android.gradle_distribution_url = https://services.gradle.org/distributions/gradle-8.7-bin.zip
 
