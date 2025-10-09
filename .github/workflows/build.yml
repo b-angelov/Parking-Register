@@ -28,9 +28,9 @@ jobs:
       - name: Build with Buildozer
         uses: ArtemSBulgakov/buildozer-action@v1
         with:
-          repository-root: main
+          repository_root: main
           workdir: .
-          buildozer-version: stable
+          buildozer_version: stable
           command: |
             buildozer android update || true
             find ./.buildozer -name "gradle-wrapper.properties" && \
