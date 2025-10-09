@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-buildozer:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -18,6 +18,11 @@ jobs:
         with:
           path: ~/hostcwd/.buildozer
           key: ${{ runner.os }}-buildozer-${{ hashFiles('**/requirements.txt') }}
+
+      - name: Patch Buildozer action for Ubuntu 24.04+
+        run: |
+          sed -i "s/pip install --user --upgrade/pip install --break-system-packages --upgrade/" /action/entrypoint.py
+        shell: bash
 
       - name: Build with Buildozer
         uses: ArtemSBulgakov/buildozer-action@v1
