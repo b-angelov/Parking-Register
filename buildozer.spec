@@ -7,7 +7,7 @@ source.include_exts = py,png,jpg,kv,atlas
 icon.filename = %(source.dir)s/my_ico.png
 presplash.filename = %(source.dir)s/my_ico.png
 version = 0.1.1
-requirements = python3,kivy,sqlite3,pyjnius,kivymd,pillow
+requirements = python3,kivy,pyjnius,kivymd,pillow
 orientation = landscape
 fullscreen = 0
 android.archs = arm64-v8a, armeabi-v7a
@@ -15,10 +15,10 @@ android.allow_backup = True
 
 p4a.source_dir = 
 p4a.local_recipes = 
-p4a.branch = develop
+p4a.branch = stable
 
 # Android API levels
-android.api = 34
+android.api = 35
 android.minapi = 21
 android.ndk_api = 21
 
