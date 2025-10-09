@@ -28,7 +28,7 @@ jobs:
           buildozer-version: stable
           command: |
             buildozer android update || true
-            find ./.buildozer -name "gradle-wrapper.properties" -exec sed -i 's|gradle-[0-9.]*-all.zip|gradle-8.7-bin.zip|g' {} \;
+            find ./.buildozer -name "gradle-wrapper.properties" -exec sed -i 's|gradle-[0-9.]*-all.zip|gradle-8.7-bin.zip|g' {} \; || true
             buildozer android release
         env:
           USER: root
