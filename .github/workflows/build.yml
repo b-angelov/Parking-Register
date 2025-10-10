@@ -10,6 +10,10 @@ on:
         required: false
         default: 'v0.1.0'
 
+env:
+  RELEASE_TAG: ${{ github.event.inputs.release_tag || github.event.release.tag_name || 'not-tagged' }}
+  RELEASE_NOTES: ${{ github.event.inputs.release_tag || github.event.release.tag_name || 'default' }}
+
 jobs:
   build-buildozer:
     runs-on: ubuntu-latest
@@ -66,9 +70,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: ${{ github.event.release.tag_name || 'not-tagged' }}
-          release_name: Release ${{ github.event.release.tag_name || 'not-tagged' }}
-          body_path: ./release_notes/${{ github.event.release.tag_name || 'default' }}.md
+          tag_name: ${{ env.RELEASE_TAG }}
+          release_name: Release ${{ env.RELEASE_TAG }}
+          body_path: ./release_notes/${{ env.RELEASE_NOTES }}.md
           draft: false
           prerelease: false
 
@@ -78,6 +82,7 @@ jobs:
         run: |
           echo "APK=$(ls ./bin/*.apk | head -n 1)" >> $GITHUB_ENV
           echo "AAB=$(ls ./bin/*.aab | head -n 1)" >> $GITHUB_ENV
+          
 
       - name: Upload Release APK
         id: upload-release-apk
