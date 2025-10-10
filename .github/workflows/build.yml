@@ -32,10 +32,11 @@ jobs:
           workdir: .
           buildozer_version: stable
           command: |
-            if [ ! -d ".buildozer/android/platform/android-sdk/platforms/android-35" ]; then
-              echo "⚠️ SDK 35 missing — reinstalling..."
-              .buildozer/android/platform/android-sdk/cmdline-tools/latest/bin/sdkmanager \
-              --sdk_root=.buildozer/android/platform/android-sdk "platforms;android-35" "build-tools;35.0.0" || true
+            SDKMANAGER=$(find . -path "*/cmdline-tools/*/bin/sdkmanager" | head -n1 || true)
+            if [ -n "$SDKMANAGER" ]; then
+              yes | "$SDKMANAGER" --sdk_root=$(dirname $(dirname $(dirname "$SDKMANAGER"))) "platforms;android-35" "build-tools;35.0.0"
+            else
+              echo "⚠️ sdkmanager not found — will let Buildozer reinstall automatically"
             fi  
             buildozer android update || true
             find ./.buildozer -name "gradle-wrapper.properties" && \
