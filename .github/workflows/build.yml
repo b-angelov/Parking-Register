@@ -28,7 +28,7 @@ jobs:
       - name: Build with Buildozer
         uses: ArtemSBulgakov/buildozer-action@v1
         with:
-          repository_root: main
+          repository_root: .
           workdir: .
           buildozer_version: stable
           command: |
