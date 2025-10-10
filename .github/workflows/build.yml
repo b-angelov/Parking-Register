@@ -31,13 +31,7 @@ jobs:
           repository_root: .
           workdir: .
           buildozer_version: stable
-          command: |
-            SDKMANAGER=$(find . -path "*/cmdline-tools/*/bin/sdkmanager" | head -n1 || true)
-            if [ -n "$SDKMANAGER" ]; then
-              yes | "$SDKMANAGER" --sdk_root=$(dirname $(dirname $(dirname "$SDKMANAGER"))) "platforms;android-35" "build-tools;35.0.0"
-            else
-              echo "⚠️ sdkmanager not found — will let Buildozer reinstall automatically"
-            fi  
+          command: | 
             buildozer android update || true
             find ./.buildozer -name "gradle-wrapper.properties" && \
             find ./.buildozer -name "gradle-wrapper.properties" -exec sed -i 's|gradle-[0-9.]*-all.zip|gradle-8.7-bin.zip|g' {} \; || true

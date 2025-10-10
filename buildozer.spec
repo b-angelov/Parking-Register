@@ -22,6 +22,8 @@ p4a.local_recipes =
 android.api = 35
 android.minapi = 21
 # android.ndk_api = 21
+android.sdk_path = .buildozer/android/platform/android-sdk
+android.ndk_path = .buildozer/android/platform/android-ndk-r25b
 
 # Skip these for now
 android.gradle_dependencies =
