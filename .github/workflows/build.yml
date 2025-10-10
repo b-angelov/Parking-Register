@@ -32,11 +32,13 @@ jobs:
           workdir: .
           buildozer_version: stable
           command: |
+            if [ ! -d ".buildozer/android/platform/android-sdk/platforms/android-35" ]; then
+              echo "⚠️ SDK 35 missing — reinstalling..."
+              yes | sdkmanager --sdk_root=.buildozer/android/platform/android-sdk "platforms;android-35" "build-tools;35.0.0" || true
+            fi  
             buildozer android update || true
             find ./.buildozer -name "gradle-wrapper.properties" && \
             find ./.buildozer -name "gradle-wrapper.properties" -exec sed -i 's|gradle-[0-9.]*-all.zip|gradle-8.7-bin.zip|g' {} \; || true
-            buildozer android release
-            buildozer android debug
         env:
           USER: root
           PIP_BREAK_SYSTEM_PACKAGES: '1'  # This is needed for Ubuntu 24.04 and later to allow pip to upgrade packages
@@ -49,13 +51,26 @@ jobs:
           sudo chown -R $USER:$USER ./.buildozer/ || true 
       
       - name: Save Cache
-        if: always()
+        if: success()
         uses: actions/cache/save@v3
         with:
           path: ./.buildozer
           key: ${{ runner.os }}-buildozer-${{ hashFiles('./buildozer.spec') }}
         env:
           USER: root
+      
+      - name: Buildozer create Release and Debug APK/AAB
+        uses: ArtemSBulgakov/buildozer-action@v1
+        with:
+          repository_root: .
+          workdir: .
+          buildozer_version: stable
+          command: |
+            buildozer android release
+            buildozer android debug
+        env:
+          USER: root
+          PIP_BREAK_SYSTEM_PACKAGES: '1'  # This is needed for Ubuntu 24.04 and later to allow pip to upgrade packages
 
 
       - name: Release Branch
