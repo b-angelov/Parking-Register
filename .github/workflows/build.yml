@@ -34,7 +34,8 @@ jobs:
           command: |
             if [ ! -d ".buildozer/android/platform/android-sdk/platforms/android-35" ]; then
               echo "⚠️ SDK 35 missing — reinstalling..."
-              yes | sdkmanager --sdk_root=.buildozer/android/platform/android-sdk "platforms;android-35" "build-tools;35.0.0" || true
+              .buildozer/android/platform/android-sdk/cmdline-tools/latest/bin/sdkmanager \
+              --sdk_root=.buildozer/android/platform/android-sdk "platforms;android-35" "build-tools;35.0.0" || true
             fi  
             buildozer android update || true
             find ./.buildozer -name "gradle-wrapper.properties" && \
