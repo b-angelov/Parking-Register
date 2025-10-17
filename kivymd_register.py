@@ -1,72 +1,22 @@
 from kivy.metrics import dp
 from kivymd.app import MDApp
-from kivymd.uix.datatables import MDDataTable
+# from kivymd.uix.datatables import MDDataTable
 from kivymd.uix.screen import MDScreen
 from kivy.uix.gridlayout import GridLayout
 from kivymd.uix.menu import MDDropdownMenu
 from kivy.lang import Builder
 
-KV = """
-        
-        BaseListItem:
-            ripple_scale: 0.07
-            height:150
-            
-        # MDScreen:
-        #             
-            MDTextField:
-                mode: "round"
-                id: car_number_%d
-                helper_text_mode: "on_focus"
-                pos_hint: {"center_x": .19, "center_y": .%p}
-                size_hint_x: .20
-                hint_text: app.messages['car number']
-                helper_text: app.messages["car number"]
-                elevation: 105
-            
-            MDTextField:
-                mode: "round"
-                id: stay_%d
-                text: '1'
-                hint_text_mode: "on_focus"
-                pos_hint: {"center_x": .40, "center_y": .%p}
-                size_hint_x: .20
-                hint_text: app.messages['stay']
-                helper_text: app.registry_class.time_unit_check()
-                elevation: 105
-            
-            MDLabel:
-                pos_hint: {"center_x": .61, "center_y": .%p}
-                size_hint_x: .20
-                text: app.messages['paid']
-                
-            MDSwitch:
-                id: paid_%d
-                pos_hint: {'center_x': .67, 'center_y': .%p}
-            
-            MDLabel:
-                mode: "fill"
-                pos_hint: {"center_x": .81, "center_y": .%p}
-                size_hint_x: .20
-                text: app.messages['left']
-            
-            MDSwitch:
-                id: left_%d
-                pos_hint: {'center_x': .87, 'center_y': .%p}
+from layouts.layouts import Layout
 
-"""
+layout_module = Layout("register_table")
 
 KV =\
 """
         
             
-""" + KV
+""" + layout_module.module.KV
 
-KVE = "".join(["""
-        BaseListItem:
-            height: 100
-            ripple_scale: 0.07
-""" for _ in range(5)])
+KVE = layout_module.module.KVE
 
 
 
@@ -96,7 +46,7 @@ class RegisterTable(MDApp):
     def _load_kv(self, kv: str):
         # kv = "\nScrollView:\n\tMDList:\n" + kv
         kv = "\nScrollView:\n\tpos_hint: {\"center_x\": .49, \"center_y\": .05}\n\tMDList:\n\t" + kv + KVE
-        self.layout = Builder.load_string(kv)
+        self.layout = layout_module.build(kv)
         return self.layout
 
     def _load_view(self, count: int):

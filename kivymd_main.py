@@ -1,5 +1,10 @@
 # import packages
-APP_VERSION = "Alpha 1.0.0"
+from kivymd.uix.label import MDLabel
+from kivymd.uix.list import MDListItemHeadlineText
+
+from layouts.layouts import Layout
+
+APP_VERSION = "2.0.0"
 import os
 import locale
 if os.name == "nt":
@@ -7,192 +12,32 @@ if os.name == "nt":
     windll.user32.SetProcessDpiAwarenessContext(c_int64(-4))
     locale.setlocale(locale.LC_ALL, 'bg_BG')
 else:
-    locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+    locale.setlocale(locale.LC_ALL, 'bg_BG.UTF-8')
 
-from kivymd.uix.button import MDFlatButton
-from kivymd.uix.dialog import MDDialog
-from kivy.lang import Builder
+from kivymd.uix.button import MDButton, MDButtonText
+# from kivymd.uix.button import MDFlatButton
+from kivymd.uix.dialog import MDDialog, MDDialogButtonContainer, MDDialogSupportingText
 from kivy.clock import Clock
 from kivymd.app import MDApp
 from kivymd.uix.menu import MDDropdownMenu
 from kivy.metrics import dp
-from kivymd.uix.pickers import MDDatePicker, MDTimePicker
+from kivymd.uix.pickers import MDModalDatePicker, MDTimePickerDialVertical
+# from kivymd.uix.pickers import MDDatePicker, MDTimePicker
 from kivymd_table import MainTable
 from kivymd_register import RegisterTable
+from kivy.core.window import Window
+from layouts.messages import Messages
+
+Window.fullscreen = 'auto'
 
 # writing kv lang
-KV = '''
-# declaring layout/screen
-MDScreen:
 
-	# this will create a space navigation bottom
-	MDBottomNavigation:
-
-		# this will create a navigation button on the bottom of screen
-		MDBottomNavigationItem:
-		    id: first
-			name: 'screen 1'
-			text: app.messages['register title']
-			icon: 'book-arrow-up'
-			
-
-			# this will be triggered when screen 1 is selected
-			# creates a label
-			on_tab_press: app.change_screen("screen 1")
-			# on_tab_press: app.show_registry()
-			# on_tab_press: app.replace_widget(app.root.ids.first, app.registry_class._load_view(8))
-			
-			MDRectangleFlatButton:
-			    pos_hint: {"center_x": .9, "center_y": .65}
-			    width: 1
-			    text_color: "grey"
-			    line_color: "grey"
-                id: submit_button
-                name: 'submit_button'
-                text: 'Изпрати'
-                on_press: app.submit_dialog()
-			
-			MDRectangleFlatButton:
-			    pos_hint: {"center_x": .1, "center_y": .65}
-			    width: 1
-			    text_color: "grey"
-			    line_color: "grey"
-                id: count_button
-                name: 'count_button'
-                text: 'Брой полета'
-                on_press: app.count_menu()
-                
-            MDRectangleFlatButton:
-			    pos_hint: {"center_x": .5, "center_y": .65}
-			    width: 1
-			    text_color: "grey"
-			    line_color: "grey"
-                id: time_unit_button
-                name: 'time_unit_button'
-                text: 'Единица за време'
-                on_press: app.time_unit_menu()
-                
-            
-			
-			MDLabel:
-				text: app.messages['register a car']
-				halign: 'center'
-				valign: 'bottom'
-				pos_hint: {"center_x": .50, "center_y": .80}
-				
-
-		# this will create a navigation button on the bottom of screen
-		MDBottomNavigationItem:
-		    id: second
-			name: 'screen 2'
-			text: app.messages['show registered title']
-			icon: 'car'
-			
-
-			# this will be triggered when screen 2 is selected
-			# creates a label
-			# on_tab_press: app.show_table()
-			   
-			
-			MDLabel:
-				text: f"{app.messages['view registered']} {app.messages['sort by']}:"
-				halign: 'center'
-				pos_hint: {"center_x": .50, "center_y": .07}
-				index: 100
-			
-			MDLabel:
-			    id: sort_label
-			    text: f"{app.messages['time dict'][app.sorted_by[0]]}, {app.messages['sort dict'][app.sorted_by[1]]}"
-			    halign: 'center'
-                pos_hint: {"center_x": .50, "center_y": .03}
-                index: 100
-				
-            MDRaisedButton:
-                id: button
-                name: "screen 2"
-                text: "Сортиране"
-                pos_hint: {"center_x": .1, "center_y": .06}
-                on_release: app.add_sort_dialog().open()
-            
-            
-        
-			    
-
-		# this will create a navigation button on the bottom of screen
-		MDBottomNavigationItem:
-		    id: third
-			name: 'screen 3'
-			text: app.messages['about the app title']
-			icon: 'check-decagram'
-
-            on_tab_press: app.change_screen("screen 3")
-			# this will be triggered when screen 3 is selected
-			# creates a label
-			MDLabel:
-				text: app.messages['about the app']
-				halign: 'center'
-				
-	MDTextField:
-        id: text_field_date
-        hint_text: "Helper text on error (press 'Enter')"
-        helper_text: "There will always be a mistake"
-        helper_text_mode: "on_error"
-        pos_hint: {"center_x": .15, "center_y": .95}
-        size_hint_x: .25
-        hint_text: app.messages["today"] + ":"
-        text: app.table_class.verb_date(str(app.table_class.parkings.bases.date_or_now())).split(" -")[0]
-        on_focus: app.show_date_picker() if self.focus else None
-        elevation: 105
-    
-    MDTextField:
-        id: text_field_time
-        hint_text: "Helper text on error (press 'Enter')"
-        helper_text: "There will always be a mistake"
-        helper_text_mode: "on_error"
-        pos_hint: {"center_x": .35, "center_y": .95}
-        size_hint_x: .10
-        hint_text: app.messages["now"] + ":"
-        text: app.table_class.verb_date(str(app.table_class.parkings.bases.date_or_now())).split(" - ")[1]
-        on_focus: app.show_time_picker() if self.focus else None
-        
-    MDTextButton:
-        text: "MDTextButton"
-        custom_color: "red"
-        text: app.messages["reset date"]
-        on_press: app.on_date_cancel(None,None) 
-        fofnt_style: 'Subtitle1'
-        font_size: '10sp'
-        pos_hint: {"center_x": .58, "center_y": .95}
-        size_hint_x: .30
-				 
-'''
 
 
 # App class
 class ParkingRegister(MDApp):
 
-    messages = {
-        "cancel": "Отказ",
-        "save": "Запиши",
-        "confirm save": "Желаете ли запишете посочените номера в регистъра?",
-        "car number": "Номер МПС:",
-        "stay": "Престой:",
-        "paid": "Платено:",
-        "left": "Напуснал:",
-        "register a car": "Регистриране на автомобил",
-        "view registered": "Преглед на регистрираните",
-        "register title": "Регистрирай",
-        "show registered title": "Покажи регистрираните",
-        "about the app title": "За приложението",
-        "about the app": f"Паркинг регистратор\n Конзолно приложение плюс графичен интерфейс \n с помощта на KivyMD 1.1.0 \n Борислав Ангелов 2022 © \n Версия: {APP_VERSION} \n https://github.com/b-angelov/Parking-Register",
-        "sort by": "Сортиране по",
-        "today": "Днешна дата",
-        "now": "Час",
-        "hour": "час",
-        "reset date": "Сверяване на часовника",
-        "time dict" : {"day": "Ден", "week": "Седмица", "month": "Месец", "year": "Година", "all":"Всички данни"},
-        "sort dict" : {"arrival":"Пристигане", "departure":"Заминаване", "present":"Присъствали през периода", "present_strict":"Присъстващи в момента" }
-    }
+    messages = Messages(APP_VERSION=APP_VERSION).messages
     table_class = MainTable()
     registry_class = RegisterTable()
     now = None
@@ -204,31 +49,42 @@ class ParkingRegister(MDApp):
         self.icon = "my_ico.png"
         self.registry_class.messages = self.messages
         self.sorted_by = list(sorted_by)
-        screen = Builder.load_string(KV)
+        screen = Layout("default").build()
         # print(self.sorted_by)
         self.run_clock()
-        self.register_widget = screen.ids.first.add_widget(self.registry_class.build())
-        table = self.table_class.build()
-        self.table_widget = screen.ids.second.add_widget(table)
+        self.register_widget = screen.ids.home.add_widget(self.registry_class.build())
+        # table = self.table_class.build()
+        # self.table_widget = screen.ids.registered.add_widget(table)
         # returning screen
         return screen
 
+    def switch_tabs(self, bar,item,icon,text):
+        {
+            "home": lambda: self.show_registry(),
+            "registered": lambda: self.show_table(),
+            "about": lambda: self.change_screen(item.name)
+        }.get(item.name, lambda: None)()
+
     def show_table(self):
         try:
-            self.table_widget
+            if not self.table_widget:
+                raise Exception
         except:
-            self.root.ids.second.add_widget(self.table_class.build())
-            # self.root.ids.second.add_widget(self.add_sort_dialog())
-            self.table_widget = True
-        self.change_screen("screen 2")
+            widget = self.table_class.build()
+            self.table_class.screen.ids.data_table.pos_hint = {"center_x": 0.5, "center_y": 3.5}
+            self.table_class.screen.ids.data_table.size_hint = 0.98, 4.4
+            self.root.ids.registry_content.add_widget(widget)
+            # self.root.ids.registered.add_widget(self.add_sort_dialog())
+            self.table_widget = widget
+        self.change_screen("registered")
 
     def show_registry(self):
         try:
             self.registry_widget
         except:
-            self.root.ids.first.add_widget(self.registry_class.build())
+            self.root.ids.home.add_widget(self.registry_class.build())
             self.registry_widget = True
-        self.change_screen("screen 1")
+        self.change_screen("home")
 
     def add_sort_dialog(self):
 
@@ -237,8 +93,7 @@ class ParkingRegister(MDApp):
                 "id": "sort_button",
                 "height": dp(42),
                 "width": dp(10),
-                "text": f'{self.messages["sort by"]}: {self.messages["time dict"][self.sorted_by[0]]}, {self.messages["sort dict"][self.sorted_by[1]]}',
-                "viewclass": "OneLineListItem",
+                "text":f'{self.messages["sort by"]}: {self.messages["time dict"][self.sorted_by[0]]}, {self.messages["sort dict"][self.sorted_by[1]]}',
                 "on_release": lambda x=f"{self.sorted_by[1]}": self.sort_menu(x)
             }
             ]
@@ -246,8 +101,7 @@ class ParkingRegister(MDApp):
             {
                 "height": dp(42),
                 "width": dp(10),
-                "text": f"{i}",
-                "viewclass": "OneLineListItem",
+                "text":f"{i}",
                 "on_release": lambda x=f"{i}": self.sort_by_time(x),
             } for i in self.messages["time dict"].values()
         ]
@@ -265,9 +119,9 @@ class ParkingRegister(MDApp):
             sort_time = {v:k for (k,v) in self.messages["time dict"].items()}[sort_time]
         # print(sort_time)
         self.sorted_by[0] = sort_time
-        self.root.ids.sort_label.text = f"{self.messages['time dict'][self.sorted_by[0]]}, {self.messages['sort dict'][self.sorted_by[1]]}"
+        # self.root.ids.sort_label.text = f"{self.messages['time dict'][self.sorted_by[0]]}, {self.messages['sort dict'][self.sorted_by[1]]}"
         mode = {"selection_mode": self.sorted_by[1]}
-        self.table_class.data_tables.update_row_data(self.table_class.data_tables, self.table_class.prepare_data(sort_time, mode))
+        self.table_class.update_table_data(self.table_class.prepare_data(sort_time, mode))
 
     def re_sort(self, sort_mode):
         # print(sort_mode)
@@ -280,7 +134,6 @@ class ParkingRegister(MDApp):
                 "height": dp(42),
                 "width": dp(10),
                 "text": f"{v}",
-                "viewclass": "OneLineListItem",
                 "on_release": lambda x=f"{k}": self.re_sort(x),
             } for k,v in self.messages["sort dict"].items()
         ]
@@ -294,8 +147,8 @@ class ParkingRegister(MDApp):
 
 
     def change_screen(self, screen: str):
-        screen = self.root.ids
-        self.root.current = screen
+        # screen = self.root.ids
+        self.root.ids.screen_manager.current = screen
 
     def clock_fields(self, date = None):
         if self.temp_date:
@@ -314,32 +167,38 @@ class ParkingRegister(MDApp):
     def stop_clock(self):
         self.clock_schedule_holder.cancel()
 
-    def on_date_save(self, instance, value, date_range):
+    def on_date_save(self, *args):
+        instance, = args
+        value = args[1] if len(args) > 1 else instance.get_date()[0].strftime('%Y-%m-%d %H:%M:%S.%f')
         self.temp_date = str(value)
+        instance.dismiss()
         pass
 
     def on_date_cancel(self, instance, value):
         self.temp_date = None
         pass
 
-    def on_time_save(self, instance, value):
+    def on_time_save(self, *args):
+        instance,*args = args
+        value = args[0] if args else instance.time
         add = 0
-        if self.time_dialog._am_pm_selector.selected == "pm" and os.name == "nt":
+        if self.time_dialog.am_pm == "pm":
             add = 12
         value = str(value).split(":")
         value[0] = str(add + int(value[0]))
         self.temp_date = self.now.split(" ")[0] + " " + ":".join(value)
         # print(self.temp_date)
+        instance.dismiss()
         pass
 
     def show_date_picker(self):
-        self.date_dialog = MDDatePicker()
-        self.date_dialog.bind(on_save=self.on_date_save)
+        self.date_dialog = MDModalDatePicker()
+        self.date_dialog.bind(on_ok=self.on_date_save)
         self.date_dialog.open()
 
     def show_time_picker(self):
-        self.time_dialog = MDTimePicker()
-        self.time_dialog.bind(on_save=self.on_time_save)
+        self.time_dialog = MDTimePickerDialVertical()
+        self.time_dialog.bind(on_ok=self.on_time_save)
         self.time_dialog.open()
 
     def replace_widget(self, widget_id, new_widget, trim_count=3):
@@ -355,8 +214,7 @@ class ParkingRegister(MDApp):
                 "height": dp(42),
                 "width": dp(10),
                 "text": f"{i + 1}",
-                "viewclass": "OneLineListItem",
-                "on_press": lambda x=i: self.replace_widget(self.root.ids.first, self.registry_class._load_view(x + 1)),
+                "on_press": lambda x=i: self.replace_widget(self.root.ids.home, self.registry_class._load_view(x + 1),4),
             } for i in range(10)
         ]
 
@@ -384,22 +242,26 @@ class ParkingRegister(MDApp):
         pass
 
     def submit_dialog(self):
+        cancel = MDButton(
+            style="filled",
+            on_release=lambda x: self.process_dialog(False)
+        )
+        save = MDButton(
+            style="filled",
+            on_release=lambda x: self.process_dialog(True)
+        )
+        cancel.add_widget(MDButtonText(
+            text=self.messages["cancel"],
+            text_color=self.theme_cls.primaryContainerColor,
+        ))
+        save.add_widget(MDButtonText(
+            text=self.messages["save"],
+            text_color=self.theme_cls.primaryContainerColor,
+        ))
+
         self.dialog_instance = MDDialog(
-            text=self.messages["confirm save"],
-            buttons=[
-                MDFlatButton(
-                    text=self.messages["cancel"],
-                    theme_text_color="Custom",
-                    text_color=self.theme_cls.primary_color,
-                    on_release=lambda x: self.process_dialog(False)
-                ),
-                MDFlatButton(
-                    text=self.messages["save"],
-                    theme_text_color="Custom",
-                    text_color=self.theme_cls.primary_color,
-                    on_release=lambda x: self.process_dialog(True)
-                ),
-            ],
+            MDDialogSupportingText(text=self.messages["confirm save"]),
+            MDDialogButtonContainer(save,cancel)
         )
         self.dialog_instance.open()
         return self.dialog_instance
@@ -409,7 +271,7 @@ class ParkingRegister(MDApp):
 
     def reload_registry_widget(self):
         # print(self.registry_class.fields_count)
-        self.replace_widget(self.root.ids.first, self.registry_class._load_view(self.registry_class.fields_count))
+        self.replace_widget(self.root.ids.home, self.registry_class._load_view(self.registry_class.fields_count),4)
 
     def process_dialog(self, value):
         self.dialog_switch(value)
@@ -428,7 +290,6 @@ class ParkingRegister(MDApp):
                 "height": dp(42),
                 "width": dp(10),
                 "text": f"{v}",
-                "viewclass": "OneLineListItem",
                 "on_press": lambda x=i: self.time_unit_func(x),
             } for (i,v) in units_menu.items()
         ]
@@ -445,6 +306,10 @@ class ParkingRegister(MDApp):
         self.time_unit, self.registry_class.time_unit =  unit, unit
         self.table_class.parkings.time_mode = unit + "s"
         self.reload_registry_widget()
+
+    def set_rows_per_page(self, count, widget=None):
+        widget = widget or self.table_class
+        widget.set_rows_per_page(count)
 
 
 

@@ -2,6 +2,9 @@
 import os
 import locale
 import sys
+
+from kivy.lang import Builder
+
 parent = os.path.abspath('../')
 sys.path.append(parent)
 import parking_lib
@@ -16,7 +19,9 @@ from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.floatlayout import FloatLayout
 
 from kivymd.app import MDApp
-from kivymd.uix.datatables import MDDataTable
+from DataTable import DataTable as MDDataTable, get_table
+# from DataTable import KV as KVTable
+# from kivymd.uix.datatables import MDDataTable
 
 
 
@@ -28,7 +33,7 @@ MDDataTable:
 """
 
 
-class MainTable(MDApp):
+class MainTableOLD(MDApp):
 
     parkings = parking_lib.Checking(dbname="parking.db")  # "parking.db"
     env_date = datetime.datetime.now()
@@ -77,6 +82,33 @@ class MainTable(MDApp):
         layout.add_widget(self.data_tables)
         return layout
 
+class MainTable(MDApp):
+
+    parkings = parking_lib.Checking(dbname="parking.db")  # "parking.db"
+    env_date = datetime.datetime.now()
+
+    def build(self):
+        locale_strings = locale.localeconv()
+        self.currency = locale_strings["currency_symbol"]
+        # parking_lib.test(self.parkings).add_random_data(3000,("2022-01-01", "2023-01-01"))
+        self._data = self.prepare_data()
+        screen = get_table()
+        self.screen = screen
+        self.column_names = self.parkings.bases.field_names_list()
+        self.column_names = [[val] for val in self.column_names]
+        self.theme_cls.theme_style = "Light"
+        self.theme_cls.primary_palette = "Blue"
+
+        layout = FloatLayout()
+        # layout.pos_hint = {"center_x": .50, "center_y": .50}
+        # screen.pos_hint = {"center_x": 0.5, "center_y": .3}
+        size_map = (0.2,1,0.2,0.5,0.5,0.5,0.4,0.17,0.17)
+        column_props = [(val[0],size_map[idx]) for idx, val in enumerate(self.column_names)]
+        screen.ids.data_table.rows_per_page = 5
+        screen.ids.data_table.set_data(column_props, self._data)
+        layout.add_widget(screen)
+        return layout
+
     def prepare_data(self, period="day", modes: dict=None):
         if type(modes) is not dict:
             modes = {"selection_mode":"present"}
@@ -105,15 +137,15 @@ class MainTable(MDApp):
 
     def is_left_icon(self, left):
         if not left:
-            return ("close-circle-outline", [0, 165 / 256, 0, 1], "")
+            return ("close-circle-outline", [0, 165 / 256, 0, 1])
         else:
-            return ("check-circle-outline", [165 / 256, 165 / 256, 165 / 256, 0.30], "")
+            return ("check-circle-outline", [165 / 256, 165 / 256, 165 / 256, 0.30])
 
     def is_paid_icon(self, paid):
         if paid:
-            return ("check-circle-outline", [0, 165 / 256, 0, 0.20], "")
+            return ("check-circle-outline", [0, 165 / 256, 0, 0.20])
         else:
-            return ("close-circle-outline", [165 / 256, 0, 0, 1], "")
+            return ("close-circle-outline", [165 / 256, 0, 0, 1])
 
     def currency_sign(self, val):
         return str(val) + " " + self.currency
@@ -133,6 +165,16 @@ class MainTable(MDApp):
                 key=lambda l: l[1][-1]
             )
         )
+
+    def set_rows_per_page(self, count):
+        """Change the number of rows displayed per page."""
+        self.screen.ids.data_table.rows_per_page = count
+        self.screen.ids.data_table.current_page = 1  # Reset to first page
+        self.screen.ids.data_table._update_table()
+
+    def update_table_data(self, data):
+        self.screen.ids.data_table.row_data = data
+        self.screen.ids.data_table._update_table()
 
 
 if __name__ == "__main__":
